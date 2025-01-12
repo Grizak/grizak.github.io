@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soundwave Easter Egg</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+    #soundwaveCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #activationHint {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="activationHint">Type "Drop the Bass" to trigger the soundwave!</div>
+  <canvas id="soundwaveCanvas"></canvas>
+
+  <!-- Include Howler.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+  <script>
+    const canvas = document.getElementById("soundwaveCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let soundwaveActive = false;
+    const sound = new Howl({
+      src: ['https://freesound.org/data/previews/582/582967_5674468-lq.mp3'], // Replace with your audio file
+      volume: 0.7
+    });
+
+    const waves = [];
+    const maxWaves = 10;
+
+    // Add random wave
+    function addWave() {
+      if (waves.length < maxWaves) {
+        waves.push({
+          x: 0,
+          y: Math.random() * canvas.height,
+          speed: Math.random() * 3 + 2,
+          amplitude: Math.random() * 40 + 10,
+          frequency: Math.random() * 0.02 + 0.01,
+          color: `hsl(${Math.random() * 360}, 80%, 60%)`
+        });
+      }
+    }
+
+    // Draw waves
+    function drawWave(wave) {
+      ctx.beginPath();
+      ctx.strokeStyle = wave.color;
+      ctx.lineWidth = 2;
+      for (let x = 0; x < canvas.width; x++) {
+        const y = wave.y + Math.sin((x + wave.x) * wave.frequency) * wave.amplitude;
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      wave.x += wave.speed;
+      if (wave.x > canvas.width) {
+        wave.x = 0;
+        wave.y = Math.random() * canvas.height;
+      }
+    }
+
+    // Animate canvas
+    function animate() {
+      if (!soundwaveActive) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      waves.forEach(drawWave);
+      requestAnimationFrame(animate);
+    }
+
+    // Activate soundwave
+    function activateSoundwave() {
+      if (soundwaveActive) return;
+      soundwaveActive = true;
+      document.getElementById("activationHint").style.display = "none";
+      sound.play();
+      for (let i = 0; i < maxWaves; i++) addWave();
+      animate();
+    }
+
+    // Listen for secret phrase
+    let inputBuffer = "";
+    document.addEventListener("keydown", (e) => {
+      inputBuffer += e.key.toLowerCase();
+      if (inputBuffer.includes("dropthebass")) {
+        activateSoundwave();
+      }
+    });
+
+    // Handle resize
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
