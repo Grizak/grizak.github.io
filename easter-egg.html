@@ -107,11 +107,24 @@
 
     function stopSoundwave() {
       soundwaveActive = false; // Stop animation
-      sound.stop(); // Stop the sound
+      fadeOutSound();
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
       document.getElementById("activationHint").style.display = "block"; // Show the hint again
     }
 
+    function fadeOutSound() {
+      let volume = sound.volume();
+      const fadeInterval = setInterval(() => {
+        volume -= 0.1;
+        if (volume <= 0) {
+          clearInterval(fadeInterval);
+          sound.stop();
+        } else {
+          sound.volume(volume);
+        }
+      }, 100); // Decrease volume every 100ms
+    }
+    
     // Listen for secret phrase
     let inputBuffer = "";
     document.addEventListener("keydown", (e) => {
