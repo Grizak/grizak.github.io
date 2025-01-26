@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minute to hour converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #f3e7e9, #e3eeff);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+  
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+  
+    input[type="number"] {
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid #aaa;
+      border-radius: 5px;
+      margin-right: 10px;
+      transition: border-color 0.3s ease-in-out;
+    }
+  
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+  
+    button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+  
+    button:hover {
+      background-color: #0056b3;
+    }
+  
+    #output {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>  
+</head>
+<body>
+  <h1>Input number of minutes: </h1>
+  <input type="number" placeholder="Input Minutes" id="min">
+  <button id="convert">Convert</button>
+  <p id="output"></p>
+
+  <script>
+    const btn = document.getElementById("convert");
+    const inputElement = document.getElementById("min");
+    const outputElement = document.getElementById("output");
+
+    btn.addEventListener("click", () => calc());
+
+    inputElement.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        calc();
+      }
+    })
+
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        calc();
+      }
+    })
+
+    const pluralize = (value, word) => (value === 1 ? word : word + "s");
+
+    const calc = () => {
+      const rawInput = inputElement.value.trim();
+      const input = parseInt(rawInput);
+
+      outputElement.style.color = "#333"
+
+      if (rawInput === "" || isNaN(input) || input < 0) {
+          outputElement.textContent = "Please enter a valid positive number";
+          outputElement.style.color = "red";
+          return;
+      }
+
+      const hours = Math.floor(input / 60);
+      const minutes = input % 60;
+
+      const formatedHours = hours > 0 ? `${hours} ${pluralize(hours, "hour")}` : "";
+      const formatedMinutes = minutes > 0 ? `${minutes} ${pluralize(minutes, "minute")}` : "";
+
+      const middle = formatedHours && formatedMinutes ? " and " : "";
+
+      const output = `${formatedHours}${middle}${formatedMinutes}`;
+      outputElement.textContent = output || "0 minutes";
+    }
+  </script>
+</body>
+</html>
