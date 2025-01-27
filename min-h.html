@@ -96,7 +96,7 @@
 
       if (rawInput === "" || isNaN(input) || input < 0) {
           outputElement.textContent = "Please enter a valid positive number";
-          outputElement.style.color = "red";
+          outputElement.style.color = "#f00";
           return;
       }
 
@@ -110,6 +110,10 @@
 
       const output = `${formatedHours}${middle}${formatedMinutes}`;
       outputElement.textContent = output || "0 minutes";
+    }
+
+    window.onload = () => {
+      inputElement.focus();
     }
   </script>
 </body>
