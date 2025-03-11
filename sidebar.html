@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar sliding animation</title>
+
+  <style>
+    :root {
+      --sidebar-width: 400px;
+      --sidebar-width-minus: calc(-1 * var(--sidebar-width));
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+
+    #sidebar {
+      width: var(--sidebar-width);
+      right: var(--sidebar-width-minus);
+      opacity: 0;
+      position: absolute;
+      background-color: red;
+      color: blue;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* transition: none; /* Prevent flickering */
+    }
+
+    #sidebar.shown {
+      animation: slide 3s forwards;
+      visibility: visible; /* Ensure visibility is set when sliding in */
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes slide {
+      0% {
+        opacity: 0;
+        right: var(--sidebar-width-minus);
+        visibility: visible;
+      }
+      100% {
+        opacity: 1;
+        right: 0;
+      }
+    }
+
+    #sidebar.slideout {
+      animation: slideout 3s forwards;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes slideout {
+      0% {
+        opacity: 1;
+        right: 0;
+      }
+      100% {
+        opacity: 0;
+        right: var(--sidebar-width-minus);
+      }
+    }
+  </style>
+</head>
+<body>
+  <button id="ss">Show sidebar</button>
+  <button id="hs">Hide sidebar</button>
+  <button id="ts">Toggle sidebar</button>
+
+  <div id="sidebar">Sidebar content</div>
+
+  <script>
+    const sidebar = document.querySelector("#sidebar");
+    const ssbtn = document.querySelector("#ss");
+    const hsbtn = document.querySelector("#hs");
+    const tsbtn = document.querySelector("#ts");
+    let sidebarVisible = false;
+
+    function showSideBar() {
+      sidebar.classList.remove("slideout");
+      sidebar.classList.add("shown");
+      sidebarVisible = true;
+    };
+
+    function hideSideBar() {
+      if (sidebarVisible) {
+        sidebar.classList.add("slideout");
+        setTimeout(() => {
+          sidebar.classList.remove("shown", "slideout");
+        }, 3000); // Wait for animation to finish
+        sidebarVisible = false;
+      }
+    };
+
+    function toggleSidebar () {
+      if (sidebarVisible) {
+        hideSideBar()
+      } else {
+        showSideBar()
+      };
+    };
+
+    ssbtn.addEventListener("click", showSideBar);
+    hsbtn.addEventListener("click", hideSideBar);
+    tsbtn.addEventListener("click", toggleSidebar);
+  </script>
+</body>
+</html>
